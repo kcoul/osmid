@@ -157,7 +157,7 @@ private:
     {
         std::vector<char *> args;
 
-        args.push_back("m20"); //Inject the binary name to match typical argv[0] contents
+        args.push_back((char*)"m2o"); //Inject the binary name to match typical argv[0] contents
 
         std::istringstream iss(commandLineParameters.toStdString());
 
@@ -172,7 +172,7 @@ private:
 
         int rc = setup_and_parse_program_options(args.size(), &args[0], popts);
 
-        for(size_t i = 0; i < args.size(); i++)
+        for(size_t i = 1; i < args.size(); i++) //TODO: NOTE: i inits at 1 to match binary name injection above!
             delete[] args[i];
 
         return rc;

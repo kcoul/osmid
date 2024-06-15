@@ -71,7 +71,7 @@ vector<string> MidiIn::getInputNames()
     vector<string> names(nPorts);
 
     for (int i = 0; i < nPorts; i++) {
-        names[i] = strArray[i].identifier.toStdString();
+        names[i] = strArray[i].name.toStdString();
     }
     return names;
 }
