@@ -45,5 +45,5 @@ protected:
     void updateMidiDevicesNamesMapping() override;
 
 private:
-    juce::MidiOutput* m_midiOut;
+    std::unique_ptr<juce::MidiOutput> m_midiOut;
 };
