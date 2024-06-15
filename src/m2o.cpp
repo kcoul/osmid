@@ -129,7 +129,6 @@ public:
         sigaction(SIGINT, &intHandler, NULL);
 #endif
 
-
         // For hotplugging
         vector<string> lastAvailablePorts = MidiIn::getInputNames();
         while (!g_wantToExit) {
