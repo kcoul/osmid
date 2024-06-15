@@ -39,10 +39,11 @@ MidiOut::MidiOut(const string& portName)
     else
         m_stickyId = getStickyIdFromName(m_portName);
 
-    m_juceMidiId = getJuceMidiIdFromName(m_portName);
+    //m_juceMidiId = getJuceMidiIdFromName(m_portName);
 
     // FIXME: need to check if name does not exist
-    m_midiOut = MidiOutput::openDevice(m_juceMidiId);
+    //m_midiOut = MidiOutput::openDevice(m_juceMidiId);
+    m_midiOut = MidiOutput::openDevice(m_portName);
 }
 
 MidiOut::~MidiOut()
@@ -62,12 +63,13 @@ void MidiOut::send(const juce::MidiMessage& message)
 
 vector<string> MidiOut::getOutputNames()
 {
-    auto strArray = MidiOutput::getDevices();
+    //auto strArray = MidiOutput::getDevices();
+    auto strArray = MidiOutput::getAvailableDevices();
     int nPorts = strArray.size();
     vector<string> names(nPorts);
 
     for (int i = 0; i < nPorts; i++) {
-        names[i] = strArray[i].toStdString();
+        names[i] = strArray[i].identifier.toStdString();
     }
     return names;
 }

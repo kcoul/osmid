@@ -41,8 +41,9 @@ MidiIn::MidiIn(const string& portName, MidiInputCallback* midiInputCallback, boo
 
     // FIXME: need to check if name does not exist
     if (!isVirtual) {
-        m_juceMidiId = getJuceMidiIdFromName(m_portName);
-        m_midiIn = MidiInput::openDevice(m_juceMidiId, midiInputCallback);
+        //m_juceMidiId = getJuceMidiIdFromName(m_portName);
+        //m_midiIn = MidiInput::openDevice(m_juceMidiId, midiInputCallback);
+        m_midiIn = MidiInput::openDevice(m_portName, midiInputCallback);
     }
     else {
 #ifndef WIN32
@@ -65,12 +66,13 @@ MidiIn::~MidiIn()
 
 vector<string> MidiIn::getInputNames()
 {
-    auto strArray = MidiInput::getDevices();
+    //auto strArray = MidiInput::getDevices();
+    auto strArray = MidiInput::getAvailableDevices();
     int nPorts = strArray.size();
     vector<string> names(nPorts);
 
     for (int i = 0; i < nPorts; i++) {
-        names[i] = strArray[i].toStdString();
+        names[i] = strArray[i].identifier.toStdString();
     }
     return names;
 }
