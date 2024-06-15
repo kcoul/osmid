@@ -24,7 +24,7 @@
 #include <memory.h>
 #include <vector>
 #include <string>
-#include "../JuceLibraryCode/JuceHeader.h"
+#include <JuceHeader.h>
 #include "oscin.h"
 #include "midiout.h"
 #include "monitorlogger.h"

@@ -26,7 +26,7 @@
 #include <map>
 #include <string>
 #include "midicommon.h"
-#include "../JuceLibraryCode/JuceHeader.h"
+#include <JuceHeader.h>
 
 // This class manages a MIDI output device as seen by JUCE
 class MidiOut : public MidiCommon {
@@ -45,5 +45,5 @@ protected:
     void updateMidiDevicesNamesMapping() override;
 
 private:
-    MidiOutput* m_midiOut;
+    juce::MidiOutput* m_midiOut;
 };

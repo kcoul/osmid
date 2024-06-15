@@ -25,7 +25,7 @@
 #include <vector>
 #include <string>
 #include "midicommon.h"
-#include "../JuceLibraryCode/JuceHeader.h"
+#include <JuceHeader.h>
 
 // This class manages a MIDI input device as seen by JUCE
 class MidiIn : public MidiCommon {
