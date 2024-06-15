@@ -52,29 +52,29 @@ void ctrlHandler(int signal)
 
 struct ProgramOptions {
     vector<string> midiInputNames;
-    bool allMidiInputs;
+    bool allMidiInputs{};
     string oscOutputHost;
     vector<int> oscOutputPorts;
-    bool useOscTemplate;
+    bool useOscTemplate{};
     string oscTemplate;
-    bool oscRawMidiMessage;
-    bool oscHeartbeat;
-    bool useVirtualPort;
+    bool oscRawMidiMessage{};
+    bool oscHeartbeat{};
+    bool useVirtualPort{};
     string virtualPortName;
-    unsigned int monitor;
-    bool listPorts;
+    unsigned int monitor{};
+    bool listPorts{};
 };
 
 class M2OConsoleApplication : public JUCEApplication
 {
 public:
     const String getApplicationName() override    { return "M2OConsoleApplication"; }
-    const String getApplicationVersion() override { return "0.0.1"; }
+    const String getApplicationVersion() override { return M2O_VERSION; }
 
     void initialise (const String& commandLineParameters) override
     {
         // Start your app here
-        DBG ("initialise");
+        DBG ("initialise M2O");
         // midiInputProcessors will contain the list of active MidiIns at a given time
         vector<unique_ptr<MidiInProcessor> > midiInputProcessors;
         // oscOutputs will contain the list of active OSC output ports
@@ -153,7 +153,7 @@ public:
 private:
     //TODO: NOTE: This won't work with quotes, so don't involve them in interface design!
     //SOURCE: https://stackoverflow.com/a/1511885/1099386
-    int convertJuceParams(const String& commandLineParameters, ProgramOptions& popts)
+    static int convertJuceParams(const String& commandLineParameters, ProgramOptions& popts)
     {
         std::vector<char *> args;
 
@@ -168,7 +168,6 @@ private:
             arg[token.size()] = '\0';
             args.push_back(arg);
         }
-        //args.push_back(0); //This is not necessary
 
         int rc = setup_and_parse_program_options(args.size(), &args[0], popts);
 
@@ -178,7 +177,7 @@ private:
         return rc;
     }
 
-    void listAvailablePorts()
+    static void listAvailablePorts()
     {
         auto inputs = MidiIn::getInputNames();
         cout << "Found " << inputs.size() << " MIDI inputs." << endl;
@@ -187,12 +186,12 @@ private:
         }
     }
 
-    void showVersion()
+    static void showVersion()
     {
         cout << "m2o version " << M2O_VERSION << endl;
     }
 
-    int setup_and_parse_program_options(int argc, char* argv[], ProgramOptions& programOptions)
+    static int setup_and_parse_program_options(int argc, char* argv[], ProgramOptions& programOptions)
     {
         cxxopts::Options options("m2o", "Bridges MIDI to OSC");
 
@@ -247,7 +246,7 @@ private:
         return 0;
     }
 
-    void prepareMidiProcessors(vector<unique_ptr<MidiInProcessor> >& midiInputProcessors, const ProgramOptions& popts, vector<shared_ptr<OscOutput> >& oscOutputs)
+    static void prepareMidiProcessors(vector<unique_ptr<MidiInProcessor> >& midiInputProcessors, const ProgramOptions& popts, vector<shared_ptr<OscOutput> >& oscOutputs)
     {
         // Should we open all devices, or just the ones passed as parameters?
         vector<string> midiInputsToOpen = (popts.allMidiInputs ? MidiIn::getInputNames() : popts.midiInputNames);
@@ -266,7 +265,7 @@ private:
         }
     }
 
-    void sendHeartBeat(const vector<unique_ptr<MidiInProcessor> >& midiProcessors, const vector<shared_ptr<OscOutput> >& oscOutputs)
+    static void sendHeartBeat(const vector<unique_ptr<MidiInProcessor> >& midiProcessors, const vector<shared_ptr<OscOutput> >& oscOutputs)
     {
         char buffer[2048];
         osc::OutboundPacketStream p(buffer, 2048);
