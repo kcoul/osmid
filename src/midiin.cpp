@@ -66,7 +66,6 @@ MidiIn::~MidiIn()
 
 vector<string> MidiIn::getInputNames()
 {
-    //auto strArray = MidiInput::getDevices();
     auto strArray = MidiInput::getAvailableDevices();
     int nPorts = strArray.size();
     vector<string> names(nPorts);
