@@ -34,7 +34,7 @@ public:
     MidiIn(const MidiIn&) = delete;
     MidiIn& operator=(const MidiIn&) = delete;
 
-    virtual ~MidiIn();
+    ~MidiIn() override;
 
     static std::vector<std::string> getInputNames();
 

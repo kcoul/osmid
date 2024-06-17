@@ -55,12 +55,12 @@ int MidiCommon::getPortId() const
 // This should be called after we detect a change in the list of MIDI devices, for finer control of which MidiIns to keep
 bool MidiCommon::checkValid() const
 {
-    auto strArray = MidiInput::getDevices();
+    auto strArray = MidiInput::getAvailableDevices();
     int nPorts = strArray.size();
     if (m_juceMidiId >= nPorts)
         return false;
 
-    string nameForId = strArray[m_juceMidiId].toStdString();
+    string nameForId = strArray[m_juceMidiId].name.toStdString();
     if (nameForId != m_portName)
         return false;
 

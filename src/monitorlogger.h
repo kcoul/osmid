@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <memory>
+#include <utility>
 #include "oscout.h"
 #include "spdlog/spdlog.h"
 #include "osc_sink.h"
@@ -17,11 +18,11 @@ public:
         return instance;
     }
 
-    void setLogLevel(int level) { spdlog::set_level(static_cast<spdlog::level::level_enum>(level)); }
+    static void setLogLevel(int level) { spdlog::set_level(static_cast<spdlog::level::level_enum>(level)); }
     void setSendToOSC(bool send) { m_sendToOSC = send; }
     void setOscOutput(std::shared_ptr<OscOutput> oscOutput)
     {
-        m_osc = spdlog::create<spdlog::sinks::osc_sink_mt>("osc", oscOutput);
+        m_osc = spdlog::create<spdlog::sinks::osc_sink_mt>("osc", std::move(oscOutput));
     }
 
     template <typename... Args>

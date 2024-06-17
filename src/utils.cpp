@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include <algorithm>
-#include <time.h>
+#include <ctime>
 #include "utils.h"
 #include "monitorlogger.h"
 
@@ -30,7 +30,7 @@ using namespace std;
 namespace local_utils{
 void replace_chars(string& str, char from, char to)
 {
-    replace_if(str.begin(), str.end(), [from, to](char c) { return c == from; }, to);
+    replace_if(str.begin(), str.end(), [from](char c) { return c == from; }, to);
 }
 
 void downcase(string& str)
@@ -71,7 +71,7 @@ void logOSCMessage(const char* data, size_t size)
 {
     MonitorLogger::getInstance().trace("sent UDP message: ");
     for (int i = 0; i < size; i++) {
-        const unsigned char udata = (unsigned char)(data[i]);
+        const auto udata = (unsigned char)(data[i]);
         // is it printable?
         if (udata >= 32 && udata <= 127)
             MonitorLogger::getInstance().trace("{}", udata);

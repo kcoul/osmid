@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <iostream>
 #include "midiout.h"
 #include "utils.h"
 
@@ -29,15 +28,20 @@ using namespace std;
 MidiOut::MidiOut(const string& portName)
 {
     m_logger.debug("MidiOut constructor for {}", portName);
-    updateMidiDevicesNamesMapping();
+
+    m_midiJuceMidiIdToName = MidiOut::getOutputNames();
+    for (int i = 0; i < m_midiJuceMidiIdToName.size(); i++) {
+        m_midiNameToJuceMidiId[m_midiJuceMidiIdToName[i]] = i;
+    }
+
     m_portName = portName;
     m_normalizedPortName = portName;
     local_utils::safeOscString(m_normalizedPortName);
 
     if (!nameInStickyTable(m_portName))
-        m_stickyId = addNameToStickyTable(m_portName);
+        m_stickyId = (int)addNameToStickyTable(m_portName);
     else
-        m_stickyId = getStickyIdFromName(m_portName);
+        m_stickyId = (int)getStickyIdFromName(m_portName);
 
     //m_juceMidiId = getJuceMidiIdFromName(m_portName);
 

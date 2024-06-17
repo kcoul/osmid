@@ -177,7 +177,6 @@ void OscInProcessor::processNoteOnMessage(const string& outDevice, const osc::Re
         velocity = (arg++)->AsInt32();
         if (arg != message.ArgumentsEnd()) {
             throw(osc::WrongArgumentTypeException());
-            return;
         }
     } catch (const osc::WrongArgumentTypeException&) {
         m_logger.error("OSC note_on message: Error parsing args. Expected int32, int32, int32.");
@@ -188,10 +187,10 @@ void OscInProcessor::processNoteOnMessage(const string& outDevice, const osc::Re
         // Send to specific channel
         MidiMessage midiMessage{ MidiMessage::noteOn(channel, note, (uint8)velocity) };
         send(outDevice, midiMessage);
-    } else if (channel <= 0) {
+    } else {
         for (int chan = 1; chan <= 16; chan++) {
             // Send to all channels
-            MidiMessage midiMessage{ MidiMessage::noteOn(chan, note, (uint8)velocity) };
+            MidiMessage midiMessage{MidiMessage::noteOn(chan, note, (uint8) velocity)};
             send(outDevice, midiMessage);
         }
     }
@@ -417,7 +416,7 @@ void OscInProcessor::processLogLevelMessage(const osc::ReceivedMessage& message)
         m_logger.error("OSC log_level message: Error parsing args. Expected int32.");
         return;
     }
-    m_logger.setLogLevel(level);
+    MonitorLogger::setLogLevel(level);
 }
 
 void OscInProcessor::processLogToOscMessage(const osc::ReceivedMessage& message)
@@ -451,7 +450,7 @@ int OscInProcessor::getMidiOutId(int n) const
     return m_outputs[n]->getPortId();
 }
 
-const std::vector<std::string> OscInProcessor::getKnownOscMessages()
+std::vector<std::string> OscInProcessor::getKnownOscMessages()
 {
     return std::vector<std::string>{"clock", "raw", "note_on", "note_off", "control_change",
         "pitch_bend", "channel_pressure", "poly_pressure", "start", "continue", "stop",

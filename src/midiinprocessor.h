@@ -35,12 +35,12 @@ public:
     void handleIncomingMidiMessage(MidiInput* source, const juce::MidiMessage& midiMessage) override;
     void setOscTemplate(const std::string& oscTemplate);
     void setOscRawMidiMessage(bool oscRawMidiMessage);
-    int getInputId() const { return m_input->getPortId(); };
-    std::string getInputNormalizedPortName() const { return m_input->getNormalizedPortName(); };
-    std::string getInputPortname() const { return m_input->getPortName(); };
+    [[nodiscard]] int getInputId() const { return m_input->getPortId(); };
+    [[nodiscard]] std::string getInputNormalizedPortName() const { return m_input->getNormalizedPortName(); };
+    [[nodiscard]] std::string getInputPortname() const { return m_input->getPortName(); };
 
 protected:
-    void doTemplateSubst(std::string& str, const std::string& portName, int portId, int channel, const std::string& message_type) const;
+    static void doTemplateSubst(std::string& str, const std::string& portName, int portId, int channel, const std::string& message_type) ;
     void dumpMIDIMessage(const uint8_t* message, int size) const;
     std::unique_ptr<MidiIn> m_input;
     std::vector<std::shared_ptr<OscOutput> > m_outputs;

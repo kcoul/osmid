@@ -58,7 +58,7 @@ public:
     std::string getNormalizedMidiOutName(int n) const;
     int getMidiOutId(int n) const;
 
-    static const std::vector<std::string> getKnownOscMessages();
+    static std::vector<std::string> getKnownOscMessages();
 
 private:
     void send(const std::string& outDevice, const MidiMessage& msg);

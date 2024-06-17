@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <spdlog/sinks/base_sink.h>
@@ -7,17 +6,17 @@
 #include <mutex>
 #include <string>
 #include <memory>
+#include <utility>
 
 #include "osc/OscOutboundPacketStream.h"
 #include "oscout.h"
 
-namespace spdlog {
-namespace sinks {
+namespace spdlog::sinks {
     template <class Mutex>
     class osc_sink : public base_sink<Mutex> {
     public:
         explicit osc_sink(std::shared_ptr<OscOutput> oscOutput)
-            : m_oscOutput(oscOutput)
+            : m_oscOutput(std::move(oscOutput))
         {
         }
 
@@ -43,4 +42,4 @@ namespace sinks {
     typedef osc_sink<std::mutex> osc_sink_mt;
     typedef osc_sink<details::null_mutex> osc_sink_st;
 }
-}
+

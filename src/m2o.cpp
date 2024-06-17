@@ -43,7 +43,7 @@ BOOL ctrlHandler(DWORD fdwCtrlType)
     return TRUE;
 }
 #else
-void ctrlHandler(int signal)
+void ctrlHandler(int /*signal*/)
 {
     cout << "Ctrl-C event" << endl;
     g_wantToExit = true;
@@ -91,7 +91,7 @@ public:
             return;
         }
 
-        MonitorLogger::getInstance().setLogLevel(popts.monitor);
+        MonitorLogger::getInstance().setLogLevel((int)popts.monitor);
 
         // Open the OSC output ports
         for (auto port : popts.oscOutputPorts) {
@@ -121,12 +121,12 @@ public:
 #if WIN32
         SetConsoleCtrlHandler((PHANDLER_ROUTINE)ctrlHandler, TRUE);
 #else
-        struct sigaction intHandler;
+        struct sigaction intHandler{};
 
         intHandler.sa_handler = ctrlHandler;
         sigemptyset(&intHandler.sa_mask);
         intHandler.sa_flags = 0;
-        sigaction(SIGINT, &intHandler, NULL);
+        sigaction(SIGINT, &intHandler, nullptr);
 #endif
 
         // For hotplugging
@@ -168,7 +168,7 @@ private:
             args.push_back(arg);
         }
 
-        int rc = setup_and_parse_program_options(args.size(), &args[0], popts);
+        int rc = setup_and_parse_program_options((int)args.size(), &args[0], popts);
 
         for(size_t i = 1; i < args.size(); i++) //TODO: NOTE: i inits at 1 to match binary name injection above!
             delete[] args[i];

@@ -21,7 +21,6 @@
 // SOFTWARE.
 
 #include <stdexcept>
-#include <chrono>
 #include <thread>
 #include <mutex>
 #include <iostream>
@@ -62,7 +61,7 @@ BOOL ctrlHandler(DWORD fdwCtrlType)
     return TRUE;
 }
 #else
-void ctrlHandler(int signal)
+void ctrlHandler(int /*signal*/)
 {
     cout << "Ctrl-C event" << endl;
     g_wantToExit = true;
@@ -92,7 +91,7 @@ public:
                 return;
             }
 
-            MonitorLogger::getInstance().setLogLevel(popts.monitor);
+            MonitorLogger::setLogLevel(popts.monitor);
 
             // Open the OSC output port, for heartbeats and logging
             oscOutput = make_shared<OscOutput>(popts.oscOutputHost, popts.oscOutputPort);

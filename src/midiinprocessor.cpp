@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <sstream>
 #include <cassert>
+#include <utility>
 #include "midiinprocessor.h"
 #include "osc/OscOutboundPacketStream.h"
 #include "utils.h"
@@ -37,7 +38,7 @@ regex MidiInProcessor::regexMessageType{ "\\$m" };
 regex MidiInProcessor::regexDoubleSlash{ "//" };
 
 MidiInProcessor::MidiInProcessor(const std::string& inputName, vector<shared_ptr<OscOutput> > outputs, bool isVirtual)
-    : m_outputs(outputs),
+    : m_outputs(std::move(outputs)),
       m_useOscTemplate(false),
       m_oscRawMidiMessage(false)
 {
@@ -46,7 +47,7 @@ MidiInProcessor::MidiInProcessor(const std::string& inputName, vector<shared_ptr
 
 void MidiInProcessor::handleIncomingMidiMessage(MidiInput* source, const juce::MidiMessage& midiMessage)
 {
-    unsigned char channel = 0xff, status = 0;
+    unsigned char channel = 0xff, status;
     string message_type;
     const uint8_t* message = midiMessage.getRawData();
     int nBytes = midiMessage.getRawDataSize();
@@ -194,9 +195,7 @@ void MidiInProcessor::handleIncomingMidiMessage(MidiInput* source, const juce::M
     // send the raw midi message as part of the body
     // do we want a raw midi message?
     if (m_oscRawMidiMessage) {
-        if (nBytes > 0) {
-            p << osc::Blob(message, static_cast<osc::osc_bundle_element_size_t>(nBytes));
-        }
+        p << osc::Blob(message, static_cast<osc::osc_bundle_element_size_t>(nBytes));
     } else {
         // We treat the pitch bend differently. Instead of sending the bytes separately,
         // we send the processed 14 bits value
@@ -214,9 +213,7 @@ void MidiInProcessor::handleIncomingMidiMessage(MidiInput* source, const juce::M
     // Dump the OSC message
     m_logger.info("sending OSC: [{}] -> {}, {}", path.str(), portId, normalizedPortName);
     if (m_oscRawMidiMessage) {
-        if (nBytes > 0) {
-            m_logger.info("  <raw_midi_message>");
-        }
+        m_logger.info("  <raw_midi_message>");
     } else {
         for (int i = 1; i < nBytes; i++) {
             m_logger.info("   [{:02x}]", (int)message[i]);
@@ -236,14 +233,14 @@ void MidiInProcessor::setOscTemplate(const std::string& oscTemplate)
 {
     m_oscTemplate = oscTemplate;
     m_useOscTemplate = true;
-};
+}
 
 void MidiInProcessor::setOscRawMidiMessage(bool oscRawMidiMessage)
 {
     m_oscRawMidiMessage = oscRawMidiMessage;
 }
 
-void MidiInProcessor::doTemplateSubst(string& str, const string& portName, int portId, int channel, const string& message_type) const
+void MidiInProcessor::doTemplateSubst(string& str, const string& portName, int portId, int channel, const string& message_type)
 {
     str = regex_replace(regex_replace(regex_replace(regex_replace(str,
                                                         regexMessageType, message_type),

@@ -40,11 +40,11 @@ public:
 
     virtual ~MidiCommon();
 
-    bool checkValid() const;
+    [[maybe_unused]] [[nodiscard]] bool checkValid() const;
 
-    std::string getPortName() const;
-    std::string getNormalizedPortName() const;
-    int getPortId() const;
+    [[nodiscard]] std::string getPortName() const;
+    [[nodiscard]] std::string getNormalizedPortName() const;
+    [[nodiscard]] int getPortId() const;
 
     static int getJuceMidiIdFromName(const std::string& portName);
 
